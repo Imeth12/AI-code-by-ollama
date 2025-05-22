@@ -38,6 +38,22 @@ Streaming AI responses 🧠
 Voice input + speech output 🎙
 
 Dark mode toggle 🌙
+📂 Project Structure
+pgsql
+Copy
+Edit
+AI-code-by-ollama/
+├── app.py
+├── requirements.txt
+├── templates/
+│   ├── chat.html
+│   ├── login.html
+│   └── register.html
+├── static/
+│   ├── style.css
+│   ├── user.png
+│   └── ai.png
+└── README.md
 
 Google tools bar (Gmail, Calendar, etc.)
 
