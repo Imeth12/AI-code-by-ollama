@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Imeth's AI via Ollama Gemma</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="chat-container">
+    <h1>🤖 Imeth's AI via Ollama Gemma</h1>
+    <p class="intro">
+      You must be a friend of mine! 👋<br>
+      Welcome to this little pocket of intelligence and imagination. 💫<br>
+      Relax and enjoy yourself! 🌟😊
+    </p>
+
+    <!-- Personality Selector -->
+    <select id="personality">
+      <option value="You are a helpful assistant.">Helpful</option>
+      <option value="You are a witty and humorous friend.">Funny</option>
+      <option value="You are a strict but kind math tutor.">Math Tutor</option>
+    </select>
+
+    <!-- Chat Messages -->
+    <div id="chat-box"></div>
+
+    <!-- Chat Log Panel -->
+    <div id="logs-panel"></div>
+
+    <!-- Input Buttons -->
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Type or speak..." />
+      <button onclick="sendMessage()">🚀</button>
+      <button onclick="startVoice()">🎙</button>
+      <button onclick="clearChat()">🧹</button>
+      <button onclick="logout()">🚪</button>
+      <button onclick="toggleDarkMode()">🌓</button>
+    </div>
+  </div>
+
+  <!-- Tools / Google Links Section -->
+  <div class="tools-container">
+    <div class="toolbar">
+      <form id="searchForm" onsubmit="searchGoogle(event)">
+        <input type="text" id="googleSearch" placeholder="🔎 Search Google..." />
+        <button type="submit">Go</button>
+      </form>
+      <div class="quick-links">
+        <a href="https://mail.google.com" target="_blank">📧 Gmail</a>
+        <a href="https://calendar.google.com" target="_blank">📅 Calendar</a>
+        <a href="https://drive.google.com" target="_blank">📁 Drive</a>
+        <a href="https://maps.google.com" target="_blank">🧭 Maps</a>
+        <a href="https://bard.google.com" target="_blank">🤖 Bard</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+
+    async function sendMessage() {
+      const input = document.getElementById('user-input');
+      const message = input.value.trim();
+      const personality = document.getElementById('personality').value;
+      if (!message) return;
+
+      appendBubble(message, 'user');
+      input.value = '';
+
+      const bubble = appendBubble('', 'ai');
+
+      const response = await fetch('/stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, personality })
+      });
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split("\n").filter(line => line.startsWith("data: "));
+        for (let line of lines) {
+          const token = line.replace("data: ", "");
+          fullText += token;
+          bubble.querySelector('.bubble-text').textContent = fullText;
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+      }
+
+      bubble.querySelector('.bubble-text').innerHTML = marked.parse(fullText);
+      speakText(fullText);
+    }
+
+    function appendBubble(text, sender) {
+      const row = document.createElement('div');
+      row.classList.add('message-row', sender);
+
+      const avatar = document.createElement('img');
+      avatar.src = sender === 'user' ? '/static/user.png' : '/static/ai.png';
+      avatar.alt = sender;
+      avatar.classList.add('avatar');
+
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble', sender);
+
+      const content = document.createElement('div');
+      content.classList.add('bubble-text');
+      content.textContent = text;
+
+      bubble.appendChild(content);
+
+      if (sender === 'user') {
+        row.appendChild(bubble);
+        row.appendChild(avatar);
+      } else {
+        row.appendChild(avatar);
+        row.appendChild(bubble);
+      }
+
+      chatBox.appendChild(row);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      return bubble;
+    }
+
+    function clearChat() {
+      fetch('/clear').then(() => window.location.reload());
+    }
+
+    function logout() {
+      window.location.href = '/logout';
+    }
+
+    function startVoice() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.start();
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('user-input').value = transcript;
+        sendMessage();
+      };
+    }
+
+    function speakText(text) {
+      const synth = window.speechSynthesis;
+      const utter = new SpeechSynthesisUtterance(text);
+      synth.speak(utter);
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+    }
+
+    function loadChatLogs() {
+      fetch('/logs')
+        .then(res => res.json())
+        .then(logs => {
+          const panel = document.getElementById("logs-panel");
+          panel.innerHTML = "<strong>📁 Chat History:</strong><ul>" +
+            logs.map(l => `<li>${l}</li>`).join('') + "</ul>";
+        });
+    }
+
+    function searchGoogle(event) {
+      event.preventDefault();
+      const query = document.getElementById('googleSearch').value.trim();
+      if (query) {
+        const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+        window.open(url, '_blank');
+      }
+    }
+
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
+    }
+
+    loadChatLogs();
+  </script>
+</body>
+</html>

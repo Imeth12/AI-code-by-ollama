@@ -1,0 +1,270 @@
+/* Animate background */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ====== GLOBAL STYLES ====== */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+/* Scrollbar styling */
+body::-webkit-scrollbar {
+  width: 10px;
+}
+body::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 5px;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* ====== CHAT CONTAINER ====== */
+.chat-container {
+  width: 90vw;
+  max-width: 1000px;
+  margin: 40px auto;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 25px;
+  border-radius: 15px;
+  box-sizing: border-box;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+/* Text intro */
+.intro {
+  font-size: 15px;
+  margin-bottom: 10px;
+  background: #f0f0f0;
+  padding: 12px;
+  border-radius: 10px;
+  border-left: 4px solid #6c5ce7;
+}
+
+/* Bubbles */
+.bubble {
+  padding: 12px 16px;
+  margin: 10px 0;
+  border-radius: 12px;
+  max-width: 90%;
+  word-wrap: break-word;
+  line-height: 1.5;
+}
+.user {
+  background: #6c5ce7;
+  color: white;
+  text-align: right;
+  margin-left: auto;
+}
+.ai {
+  background: #eee;
+  color: #333;
+  text-align: left;
+  margin-right: auto;
+}
+
+/* Chat box scrolling */
+#chat-box {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px;
+  margin: 15px 0;
+  border-radius: 12px;
+  background: #f7f7f7;
+}
+
+/* Logs panel */
+#logs-panel {
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* Input area */
+.input-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+.input-area input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+.input-area button {
+  padding: 12px 16px;
+  background: #6c5ce7;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.input-area button:hover {
+  background: #00cec9;
+}
+
+/* ====== TOOLBAR BELOW CHAT ====== */
+.tools-container {
+  width: 90vw;
+  max-width: 1000px;
+  margin: 0 auto 50px;
+  padding: 20px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+.toolbar input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+.toolbar button {
+  padding: 10px;
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.toolbar button:hover {
+  background-color: #00cec9;
+}
+.quick-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+.quick-links a {
+  text-decoration: none;
+  background: #eee;
+  color: #333;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+.quick-links a:hover {
+  background: #dfe6e9;
+}
+
+/* ====== DARK MODE ====== */
+body.dark {
+  background: linear-gradient(-45deg, #1e1e2f, #2d2d3a, #3b3b4f, #292934);
+  color: white;
+}
+
+body.dark .chat-container,
+body.dark .tools-container {
+  background: rgba(30, 30, 40, 0.95);
+}
+
+body.dark .intro {
+  background: #333;
+  border-left-color: #6c5ce7;
+}
+body.dark .user {
+  background: #6c5ce7;
+  color: white;
+}
+body.dark .ai {
+  background: #444;
+  color: white;
+}
+body.dark #chat-box {
+  background: #2c2c3a;
+}
+body.dark #logs-panel {
+  background: #222;
+  border-color: #555;
+  color: #eee;
+}
+body.dark .input-area input,
+body.dark .toolbar input {
+  background: #222;
+  color: white;
+  border: 1px solid #555;
+}
+body.dark .input-area button,
+body.dark .toolbar button {
+  background: #6c5ce7;
+}
+body.dark .quick-links a {
+  background: #3c3c4d;
+  color: #fff;
+}
+.auth-container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  width: 350px;
+  max-width: 90vw;
+  margin: 60px auto;
+  text-align: center;
+}
+.auth-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+.auth-container form input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+}
+.auth-container form input[type="submit"] {
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.auth-container form input[type="submit"]:hover {
+  background-color: #00cec9;
+}
+.auth-container a {
+  color: #6c5ce7;
+  text-decoration: none;
+}
+.auth-container a:hover {
+  text-decoration: underline;
+}
+
+/* Dark mode support */
+body.dark .auth-container {
+  background: rgba(30, 30, 40, 0.95);
+  color: #eee;
+}
+body.dark .auth-container input {
+  background: #222;
+  color: white;
+  border: 1px solid #555;
+}
